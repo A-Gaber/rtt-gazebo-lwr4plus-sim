@@ -1,0 +1,7 @@
+build/
+.project
+.cproject
+*~
+*.txt
+!CMakeLists.txt
+*.log

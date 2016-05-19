@@ -1,0 +1,33 @@
+#!/usr/bin/env deployer
+
+import("rtt_gazebo_embedded")
+
+# Loading gazebo (this will start rosnode)
+loadComponent("gazebo","RTTGazeboEmbedded")
+
+# WorldUpdateBegin and End will be called by gazebo
+setActivity("gazebo",0,10,ORO_SCHED_OTHER)
+
+# This is optional
+gazebo.argv = strings("--verbose","-s /vol/cogimon/lib/orocos/gnulinux/rtt_gazebo_system/librtt_gazebo_system.so")
+
+# Load the world file (ex pr2 model, but it can be "worlds/empty.world" also)
+#gazebo.world_path = "/usr/share/gazebo-7/worlds/pr2.world"
+
+# Load the ROS plugins
+#gazebo.add_plugin("libgazebo_ros_paths_plugin.so")
+#gazebo.add_plugin("libgazebo_ros_api_plugin.so")
+
+gazebo.configure()
+
+gazebo.start()
+
+# Loading the model interface TODO
+
+import("rtt-gazebo-lwr4plus-sim")
+loadComponent("lwr_gazebo","lwr::LWR4plusSim")
+setActivity("lwr_gazebo",0,11,ORO_SCHED_OTHER)
+lwr_gazebo.misc.setUrdfPath("/homes/dwigand/code/cogimon/cogimon-gazebo-models/aaa/model.urdf")
+#lwr_gazebo.getModel("","kuka-lwr",4)
+#lwr_gazebo.configure()
+
