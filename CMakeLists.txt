@@ -36,6 +36,12 @@ include_directories(BEFORE SYSTEM ${RSC_INCLUDE_DIRS})
 add_definitions(${RSC_CFLAGS})
 link_directories(${RSC_LIBRARY_DIR})
 
+find_package(RST-RT REQUIRED)
+message(STATUS "RST-RT version: ${RST-RT_VERSION}")	
+include_directories(BEFORE SYSTEM ${RST-RT_INCLUDE_DIRS})	
+add_definitions(${RST-RT_CFLAGS})
+link_directories(${RST-RT_LIBRARY_DIR} ${RST-RT_LIBRARY_DIRS})
+
 find_package(NemoMath REQUIRED)
 message(STATUS "NemoMath version: ${NemoMath_VERSION}")	
 include_directories(BEFORE SYSTEM ${NemoMath_INCLUDE_DIRS})	
@@ -66,6 +72,7 @@ include_directories(
     ${orocos_kdl_INCLUDE_DIRS}
     ${USE_OROCOS_INCLUDE_DIRS}
     ${GAZEBO_INCLUDE_DIRS}
+    ${RST-RT_INCLUDE_DIRS}
     ${TINYXML_INCLUDE_DIRS}
 )
 
@@ -83,6 +90,7 @@ target_link_libraries(${PROJECT_NAME}
    ${NemoMath_LIBRARIES}
    ${RSC_LIBRARIES}
    ${RCI_LIBRARIES}
+   ${RST-RT_LIBRARIES}
    ${TINYXML_LIBRARIES}
 )
 

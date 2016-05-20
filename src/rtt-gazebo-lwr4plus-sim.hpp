@@ -43,6 +43,11 @@
 // Parser include convert URDF/SDF into KDL::Chain
 #include "parsertools/KDLParser.hpp"
 
+// RST-RT includes
+#include <rst-rt/kinematics/JointAngles.hpp>
+#include <rst-rt/kinematics/JointVelocities.hpp>
+#include <rst-rt/dynamics/JointTorques.hpp>
+
 namespace lwr {
 
 class LWR4plusSim: public RTT::TaskContext {
@@ -70,6 +75,8 @@ protected:
 
 	void initKDLTools();
 
+	void setControlMode(const std::string& controlMode);
+
 	bool gazeboConfigureHook(gazebo::physics::ModelPtr model);
 
 	gazebo::physics::ModelPtr model;
@@ -83,19 +90,19 @@ protected:
 	std::vector<std::string> joint_names_;
 	std::vector<int> joints_idx_;
 
-	RTT::InputPort<rci::JointAnglesPtr> port_JointPositionCommand;
-	RTT::InputPort<rci::JointTorquesPtr> port_JointTorqueCommand;
+	RTT::InputPort<rstrt::kinematics::JointAngles> port_JointPositionCommand;
+	RTT::InputPort<rstrt::dynamics::JointTorques> port_JointTorqueCommand;
 
 	RTT::FlowStatus jnt_trq_cmd_fs, jnt_pos_cmd_fs;
 
-	RTT::OutputPort<rci::JointAnglesPtr> port_JointPosition;
-	RTT::OutputPort<rci::JointTorquesPtr> port_JointTorque;
-	RTT::OutputPort<rci::JointVelocitiesPtr> port_JointVelocity;
+	RTT::OutputPort<rstrt::kinematics::JointAngles> port_JointPosition;
+	RTT::OutputPort<rstrt::kinematics::JointVelocities> port_JointVelocity;
+	RTT::OutputPort<rstrt::dynamics::JointTorques> port_JointTorque;
 
-	rci::JointAnglesPtr jnt_pos_cmd_, jnt_pos_;
-	rci::JointTorquesPtr jnt_trq_, jnt_trq_cmd_, jnt_trq_gazebo_cmd_;
-	rci::JointVelocitiesPtr jnt_vel_, jnt_vel_cmd_;
-	rci::JointAnglesPtr jnt_pos_no_dyn_;
+	rstrt::kinematics::JointAngles jnt_pos_cmd_, jnt_pos_;
+	rstrt::dynamics::JointTorques jnt_trq_, jnt_trq_cmd_, jnt_trq_gazebo_cmd_;
+	rstrt::kinematics::JointVelocities jnt_vel_, jnt_vel_cmd_;
+	rstrt::kinematics::JointAngles jnt_pos_no_dyn_;
 
 	// contains the urdf string for the associated model.
 	std::string urdf_string;
@@ -108,7 +115,7 @@ protected:
 	// Helper tools for KDL
 	KDLParser p;
 	// for conversion to use KDL
-	Eigen::VectorXd jnt_pos_eig, jnt_vel_eig, jnt_trq_eig, jnt_pos_cmd_eig;
+//	Eigen::VectorXd jnt_pos_eig, jnt_vel_eig, jnt_trq_eig, jnt_pos_cmd_eig;
 	Eigen::VectorXd sumTorquesOutput, kp_default_;
 
 	// Contains the gravity information about the environment
