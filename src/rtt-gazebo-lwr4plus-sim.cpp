@@ -39,9 +39,12 @@ LWR4plusSim::LWR4plusSim(std::string const& name) :
 
 	this->provides("misc")->addAttribute("urdf_string", urdf_string);
 	this->provides("misc")->addOperation("setUrdfPath", &LWR4plusSim::setUrdfPath,
-			this, RTT::ClientThread);
-	this->provides("misc")->addOperation("getUrdfPath", &LWR4plusSim::getUrdfPath,
 			this, RTT::OwnThread);
+	this->provides("misc")->addOperation("getUrdfPath", &LWR4plusSim::getUrdfPath,
+			this, RTT::ClientThread);
+
+	this->addOperation("setControlMode", &LWR4plusSim::setControlMode,
+				this, RTT::ClientThread);
 
 	// using boost instead of std??
 	world_begin = gazebo::event::Events::ConnectWorldUpdateBegin(
@@ -49,6 +52,14 @@ LWR4plusSim::LWR4plusSim(std::string const& name) :
 	world_end = gazebo::event::Events::ConnectWorldUpdateEnd(
 			boost::bind(&LWR4plusSim::WorldUpdateEnd, this));
 
+}
+
+void LWR4plusSim::setControlMode(const std::string& controlMode) {
+	if (controlMode == "JointPositionCtrl") {
+		currentControlMode = JointPositionCtrl;
+	} else if (controlMode == "JointTorqueCtrl") {
+		currentControlMode = JointTorqueCtrl;
+	}
 }
 
 void LWR4plusSim::setUrdfPath(const std::string& urdf_path) {
@@ -73,15 +84,15 @@ void LWR4plusSim::initKDLTools() {
 	M_.resize(DEFAULT_NR_JOINTS);
 	C_.resize(DEFAULT_NR_JOINTS);
 
-	jnt_pos_eig.resize(DEFAULT_NR_JOINTS);
-	jnt_pos_eig.setZero();
-	jnt_vel_eig.resize(DEFAULT_NR_JOINTS);
-	jnt_vel_eig.setZero();
-	jnt_trq_eig.resize(DEFAULT_NR_JOINTS);
-	jnt_trq_eig.setZero();
-
-	jnt_pos_cmd_eig.resize(DEFAULT_NR_JOINTS);
-	jnt_pos_cmd_eig.setZero();
+//	jnt_pos_eig.resize(DEFAULT_NR_JOINTS);
+//	jnt_pos_eig.setZero();
+//	jnt_vel_eig.resize(DEFAULT_NR_JOINTS);
+//	jnt_vel_eig.setZero();
+//	jnt_trq_eig.resize(DEFAULT_NR_JOINTS);
+//	jnt_trq_eig.setZero();
+//
+//	jnt_pos_cmd_eig.resize(DEFAULT_NR_JOINTS);
+//	jnt_pos_cmd_eig.setZero();
 
 	kp_default_.resize(DEFAULT_NR_JOINTS);
 
@@ -201,17 +212,25 @@ bool LWR4plusSim::gazeboConfigureHook(gazebo::physics::ModelPtr model) {
 	RTT::log(RTT::Info) << "Gazebo model found " << joints_idx_.size()
 			<< " joints " << RTT::endlog();
 
-	jnt_pos_cmd_ = rci::JointAngles::create(7, 0.0);
-	jnt_pos_ = rci::JointAngles::create(7, 0.0);
+	jnt_pos_cmd_ = rstrt::kinematics::JointAngles(7);
+	jnt_pos_cmd_.angles.setZero();
+	jnt_pos_ = rstrt::kinematics::JointAngles(7);
+	jnt_pos_.angles.setZero();
 
-	jnt_pos_no_dyn_ = rci::JointAngles::create(7, -0.3);
+	jnt_pos_no_dyn_ = rstrt::kinematics::JointAngles(7);
+	jnt_pos_no_dyn_.angles.setConstant(-0.3);
 
-	jnt_trq_gazebo_cmd_ = rci::JointTorques::create(7, 0.0);
-	jnt_trq_cmd_ = rci::JointTorques::create(7, 0.0);
-	jnt_trq_ = rci::JointTorques::create(7, 0.0);
+	jnt_trq_gazebo_cmd_ = rstrt::dynamics::JointTorques(7);
+	jnt_trq_gazebo_cmd_.torques.setZero();
+	jnt_trq_cmd_ = rstrt::dynamics::JointTorques(7);
+	jnt_trq_cmd_.torques.setZero();
+	jnt_trq_ = rstrt::dynamics::JointTorques(7);
+	jnt_trq_.torques.setZero();
 
-	jnt_vel_cmd_ = rci::JointVelocities::create(7, 0.0);
-	jnt_vel_ = rci::JointVelocities::create(7, 0.0);
+	jnt_vel_cmd_ = rstrt::kinematics::JointVelocities(7);
+	jnt_vel_cmd_.velocities.setZero();
+	jnt_vel_ = rstrt::kinematics::JointVelocities(7);
+	jnt_vel_.velocities.setZero();
 
 	port_JointPosition.setDataSample(jnt_pos_);
 	port_JointVelocity.setDataSample(jnt_vel_);
