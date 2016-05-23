@@ -24,17 +24,17 @@ set (Eigen_INCLUDE_DIRS "/usr/include/eigen3")
 find_package(orocos_kdl REQUIRED)
 find_package(Boost COMPONENTS thread REQUIRED)
 
-find_package(RCI REQUIRED)
-message(STATUS "RCI version: ${RCI_VERSION}")	
-include_directories(BEFORE SYSTEM ${RCI_INCLUDE_DIRS})	
-add_definitions(${RCI_CFLAGS})
-link_directories(${RCI_LIBRARY_DIR})
+#find_package(RCI REQUIRED)
+#message(STATUS "RCI version: ${RCI_VERSION}")	
+#include_directories(BEFORE SYSTEM ${RCI_INCLUDE_DIRS})	
+#add_definitions(${RCI_CFLAGS})
+#link_directories(${RCI_LIBRARY_DIR})
 
-find_package(RSC REQUIRED)
-message(STATUS "RSC version: ${RSC_VERSION}")	
-include_directories(BEFORE SYSTEM ${RSC_INCLUDE_DIRS})	
-add_definitions(${RSC_CFLAGS})
-link_directories(${RSC_LIBRARY_DIR})
+#find_package(RSC REQUIRED)
+#message(STATUS "RSC version: ${RSC_VERSION}")	
+#include_directories(BEFORE SYSTEM ${RSC_INCLUDE_DIRS})	
+#add_definitions(${RSC_CFLAGS})
+#link_directories(${RSC_LIBRARY_DIR})
 
 find_package(RST-RT REQUIRED)
 message(STATUS "RST-RT version: ${RST-RT_VERSION}")	
@@ -42,11 +42,11 @@ include_directories(BEFORE SYSTEM ${RST-RT_INCLUDE_DIRS})
 add_definitions(${RST-RT_CFLAGS})
 link_directories(${RST-RT_LIBRARY_DIR} ${RST-RT_LIBRARY_DIRS})
 
-find_package(NemoMath REQUIRED)
-message(STATUS "NemoMath version: ${NemoMath_VERSION}")	
-include_directories(BEFORE SYSTEM ${NemoMath_INCLUDE_DIRS})	
-add_definitions(${NemoMath_CFLAGS})
-link_directories(${NemoMath_LIBRARY_DIR})
+#find_package(NemoMath REQUIRED)
+#message(STATUS "NemoMath version: ${NemoMath_VERSION}")	
+#include_directories(BEFORE SYSTEM ${NemoMath_INCLUDE_DIRS})	
+#add_definitions(${NemoMath_CFLAGS})
+#link_directories(${NemoMath_LIBRARY_DIR})
 
 find_package(PkgConfig REQUIRED)
 pkg_search_module(TINYXML REQUIRED tinyxml)
@@ -87,9 +87,9 @@ target_link_libraries(${PROJECT_NAME}
    ${OROCOS-RTT_LIBRARIES} 
    #${OROCOS-RTT_TYPEKIT_LIBRARIES}
    ${Boost_LIBRARIES}
-   ${NemoMath_LIBRARIES}
-   ${RSC_LIBRARIES}
-   ${RCI_LIBRARIES}
+   #${NemoMath_LIBRARIES}
+   #${RSC_LIBRARIES}
+   #${RCI_LIBRARIES}
    ${RST-RT_LIBRARIES}
    ${TINYXML_LIBRARIES}
 )

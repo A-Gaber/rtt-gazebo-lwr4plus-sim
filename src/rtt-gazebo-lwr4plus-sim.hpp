@@ -22,9 +22,9 @@
 #include <thread>
 #include <memory>
 
-#include <rci/dto/JointAngles.h>
-#include <rci/dto/JointTorques.h>
-#include <rci/dto/JointVelocities.h>
+//#include <rci/dto/JointAngles.h>
+//#include <rci/dto/JointTorques.h>
+//#include <rci/dto/JointVelocities.h>
 
 // KDL includes
 #include <kdl/tree.hpp>
@@ -149,6 +149,8 @@ private:
 	int DEFAULT_NR_JOINTS;
 
 	double fbTrq;
+
+	bool once;
 };
 }
 

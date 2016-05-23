@@ -22,7 +22,8 @@ gazebo.configure()
 
 gazebo.start()
 
-# Loading the model interface TODO
+# Loading the model
+gazebo.spawn_model("kuka-lwr", "model://aaa")
 
 import("rtt-gazebo-lwr4plus-sim")
 loadComponent("lwr_gazebo","lwr::LWR4plusSim")
