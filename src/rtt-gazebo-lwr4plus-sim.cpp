@@ -14,7 +14,7 @@ using namespace Eigen;
 
 LWR4plusSim::LWR4plusSim(std::string const& name) :
 		TaskContext(name), is_configured(false), set_brakes_(false), old_brakes_(false), set_joint_pos_no_dynamics_(
-		true), nb_loops_(0), gravity_vector(0., 0., -9.81289), DEFAULT_NR_JOINTS(7), currentControlMode(JointPositionCtrl) {
+		true), nb_loops_(0), gravity_vector(0., 0., -9.81289), DEFAULT_NR_JOINTS(7), currentControlMode(JointPositionCtrl), once(true) {
 
 	this->provides("gazebo")->addOperation("WorldUpdateBegin",
 			&LWR4plusSim::WorldUpdateBegin, this, RTT::ClientThread);

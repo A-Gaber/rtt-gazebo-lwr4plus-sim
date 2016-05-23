@@ -965,9 +965,9 @@ bool KDLParser::initTreeAndChainFromURDFString(const std::string& urdfString,
 	return true;
 }
 
-void KDLParser::convertRealVectorToEigenVectorXd(
-		const nemo::RealVector& realV, Eigen::VectorXd& vXd) {
-	for (int i = 0; i < realV.dimension(); i++) {
-		vXd(i) = realV.getElement(i);
-	}
-}
+//void KDLParser::convertRealVectorToEigenVectorXd(
+//		const nemo::RealVector& realV, Eigen::VectorXd& vXd) {
+//	for (int i = 0; i < realV.dimension(); i++) {
+//		vXd(i) = realV.getElement(i);
+//	}
+//}

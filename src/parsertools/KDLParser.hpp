@@ -42,9 +42,9 @@
 #include <tinyxml.h>
 #include <boost/shared_ptr.hpp>
 #include <urdf_parser/urdf_parser.h>
-#include <nemo/Vector.h>
-#include <nemo/Matrix.h>
-#include <nemo/Mapping.h>
+//#include <nemo/Vector.h>
+//#include <nemo/Matrix.h>
+//#include <nemo/Mapping.h>
 
 #include <Eigen/Core>
 
@@ -75,9 +75,9 @@ public:
 				KDL::Tree& kdl_tree, KDL::Chain& kdl_chain);
 
 	bool loadURDFFileIntoString(const std::string &path, std::string& xmlOut);
-
-	void convertRealVectorToEigenVectorXd(
-			const nemo::RealVector& realV, Eigen::VectorXd& vXd);
+//
+//	void convertRealVectorToEigenVectorXd(
+//			const nemo::RealVector& realV, Eigen::VectorXd& vXd);
 
 private:
 	KDL::Vector toKdl(urdf::Vector3 v);
