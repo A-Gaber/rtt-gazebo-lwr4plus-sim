@@ -2,6 +2,9 @@
 
 import("rtt_gazebo_embedded")
 
+import("rst-rt_typekit")
+import("rtt_rsbcomm")
+
 # Loading gazebo (this will start rosnode)
 loadComponent("gazebo","RTTGazeboEmbedded")
 
@@ -9,26 +12,64 @@ loadComponent("gazebo","RTTGazeboEmbedded")
 setActivity("gazebo",0,10,ORO_SCHED_OTHER)
 
 # This is optional
-gazebo.argv = strings("--verbose","-s /vol/cogimon/lib/orocos/gnulinux/rtt_gazebo_system/librtt_gazebo_system.so")
-
-# Load the world file (ex pr2 model, but it can be "worlds/empty.world" also)
-#gazebo.world_path = "/usr/share/gazebo-7/worlds/pr2.world"
-
-# Load the ROS plugins
-#gazebo.add_plugin("libgazebo_ros_paths_plugin.so")
-#gazebo.add_plugin("libgazebo_ros_api_plugin.so")
-
+gazebo.argv = strings("--verbose")
+gazebo.add_plugin("/homes/dwigand/code/cogimon/rtt_gazebo_system/build/libRTTGazeboClockPlugin.so")
 gazebo.configure()
 
 gazebo.start()
 
+gazebo.toggleDynamicsSimulation(false)
+
 # Loading the model
-gazebo.spawn_model("kuka-lwr", "model://aaa")
+gazebo.spawn_model("kuka-lwr", "model://kuka-lwr-4plus", 10)
 
-import("rtt-gazebo-lwr4plus-sim")
-loadComponent("lwr_gazebo","lwr::LWR4plusSim")
+#import("rtt-gazebo-lwr4plus-sim")
+#loadComponent("lwr_gazebo","lwr::LWR4plusSim")
+#setActivity("lwr_gazebo",0,11,ORO_SCHED_OTHER)
+#lwr_gazebo.misc.setUrdfPath("/homes/dwigand/code/cogimon/cogimon-gazebo-models/kuka-lwr-4plus/model.urdf")
+#lwr_gazebo.getModel("kuka-lwr")
+
+import("rtt-gazebo-robot-sim")
+
+loadComponent("lwr_gazebo","cogimon::robotSim")
 setActivity("lwr_gazebo",0,11,ORO_SCHED_OTHER)
-lwr_gazebo.misc.setUrdfPath("/homes/dwigand/code/cogimon/cogimon-gazebo-models/aaa/model.urdf")
-#lwr_gazebo.getModel("","kuka-lwr",4)
-#lwr_gazebo.configure()
 
+lwr_gazebo.getModel("kuka-lwr")
+lwr_gazebo.configure()
+
+
+import("rtt-core-extensions")
+loadComponent("full_arm_JointPositionCtrl","cogimon::RTTKinematicChainJa")
+setActivity("full_arm_JointPositionCtrl",0.05,50,ORO_SCHED_OTHER)
+full_arm_JointPositionCtrl.configureFBandCMDdimensions(7, 7)
+full_arm_JointPositionCtrl.addPortRobotside("base_JointPositionCtrl", 1)
+full_arm_JointPositionCtrl.addPortRobotside("upper_arm_JointPositionCtrl", 6)
+full_arm_JointPositionCtrl.configure()
+
+# connect ports
+var ConnPolicy cp;
+
+# connect proxy output to gazebo position command input
+connect("full_arm_JointPositionCtrl.base_JointPositionCtrl", "lwr_gazebo.base_JointPositionCtrl", cp)
+connect("full_arm_JointPositionCtrl.upper_arm_JointPositionCtrl", "lwr_gazebo.upper_arm_JointPositionCtrl", cp)
+# connect complete feedback
+# TODO
+
+full_arm_JointPositionCtrl.retrieveJointMappings()
+
+stream("full_arm_JointPositionCtrl.command_in", rsb.transport.socket.scope("/my/input"))
+
+full_arm_JointPositionCtrl.start()
+
+
+path("/homes/dwigand/code/cogimon/gazeboAlt/rtt-controller-template/build/src/orocos")
+import("RTTControllerTemplate")
+loadComponent("ctrl", "RttControllerTemplate")
+setActivity("ctrl",0.05,70,ORO_SCHED_OTHER)
+ctrl.configure()
+
+var ConnPolicy cp2;
+connect("ctrl.cmdJntPos", "full_arm_JointPositionCtrl.command_in", cp2)
+ctrl.retrieveJointMappings()
+
+gazebo.toggleDynamicsSimulation(true)

@@ -62,14 +62,14 @@ void LWR4plusSim::WorldUpdateBegin() {
 //	jnt_trq_cmd_->setFromNm(6, 0.0);
 
 //	if (once) {
-		jnt_pos_cmd_fs = NewData;
-		jnt_pos_cmd_.angles(0) = -0.1192;
-		jnt_pos_cmd_.angles(1) = 0.3114;
-		jnt_pos_cmd_.angles(2) = -0.1868;
-		jnt_pos_cmd_.angles(3) = -1.5733;
-		jnt_pos_cmd_.angles(4) = 0.1194;
-		jnt_pos_cmd_.angles(5) = 1.0685;
-		jnt_pos_cmd_.angles(6) = 0.0;
+//		jnt_pos_cmd_fs = NewData;
+//		jnt_pos_cmd_.angles(0) = -0.1192;
+//		jnt_pos_cmd_.angles(1) = 0.3114;
+//		jnt_pos_cmd_.angles(2) = -0.1868;
+//		jnt_pos_cmd_.angles(3) = -1.5733;
+//		jnt_pos_cmd_.angles(4) = 0.1194;
+//		jnt_pos_cmd_.angles(5) = 1.0685;
+//		jnt_pos_cmd_.angles(6) = 0.0;
 //		once = false;
 //	} else {
 //		jnt_pos_cmd_fs = OldData;

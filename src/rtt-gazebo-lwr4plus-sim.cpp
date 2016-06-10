@@ -141,8 +141,7 @@ bool LWR4plusSim::parseURDFforKDL(std::string urdfString) {
 	}
 }
 
-bool LWR4plusSim::getModel(const std::string& gazebo_comp_name,
-		const std::string& model_name, double timeout_s) {
+bool LWR4plusSim::getModel(const std::string& model_name) {
 	if (model) {
 		log(Warning) << "Model [" << model_name << "] already loaded !"
 				<< endlog();
