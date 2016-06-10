@@ -6,7 +6,7 @@ using namespace RTT;
 using namespace RTT::os;
 using namespace Eigen;
 
-void robotSim::WorldUpdateBegin() {
+void lwrSim::WorldUpdateBegin() {
     if (!is_configured && !isRunning())
         return;
 
@@ -18,7 +18,7 @@ void robotSim::WorldUpdateBegin() {
         it->second->sense();
 }
 
-void robotSim::WorldUpdateEnd() {
+void lwrSim::WorldUpdateEnd() {
     if (!is_configured && !isRunning())
         return;
 

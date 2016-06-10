@@ -30,14 +30,14 @@
 
 namespace cogimon {
 
-class robotSim: public RTT::TaskContext {
+class lwrSim: public RTT::TaskContext {
 public:
-    robotSim(std::string const& name);
+    lwrSim(std::string const& name);
     bool configureHook();
     void updateHook();
     void WorldUpdateBegin();
     void WorldUpdateEnd();
-    virtual ~robotSim() {}
+    virtual ~lwrSim() {}
 
 protected:
     bool getModel(const std::string& model_name);

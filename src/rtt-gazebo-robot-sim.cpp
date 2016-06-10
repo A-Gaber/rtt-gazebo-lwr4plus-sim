@@ -11,43 +11,43 @@ using namespace RTT;
 using namespace RTT::os;
 using namespace Eigen;
 
-robotSim::robotSim(const std::string &name):
+lwrSim::lwrSim(const std::string &name):
     TaskContext(name),
     is_configured(false)
 {
     this->provides("gazebo")->addOperation("WorldUpdateBegin",
-            &robotSim::WorldUpdateBegin, this, RTT::ClientThread);
+            &lwrSim::WorldUpdateBegin, this, RTT::ClientThread);
     this->provides("gazebo")->addOperation("WorldUpdateEnd",
-            &robotSim::WorldUpdateEnd, this, RTT::ClientThread);
+            &lwrSim::WorldUpdateEnd, this, RTT::ClientThread);
 
-    this->addOperation("getModel", &robotSim::getModel,
+    this->addOperation("getModel", &lwrSim::getModel,
                 this, ClientThread);
 
-    this->addOperation("setControlMode", &robotSim::setControlMode,
+    this->addOperation("setControlMode", &lwrSim::setControlMode,
                 this, RTT::ClientThread);
 
-    this->addOperation("getKinematicChains", &robotSim::getKinematiChains,
+    this->addOperation("getKinematicChains", &lwrSim::getKinematiChains,
                 this, RTT::ClientThread);
 
-    this->addOperation("printKinematicChainInformation", &robotSim::printKinematicChainInformation,
+    this->addOperation("printKinematicChainInformation", &lwrSim::printKinematicChainInformation,
                 this, RTT::ClientThread);
 
-    this->addOperation("getControlMode", &robotSim::getControlMode,
+    this->addOperation("getControlMode", &lwrSim::getControlMode,
                 this, RTT::ClientThread);
 
-    this->addOperation("getAvailableControlMode", &robotSim::getControlAvailableMode,
+    this->addOperation("getAvailableControlMode", &lwrSim::getControlAvailableMode,
                 this, RTT::ClientThread);
 
     this->provides("joint_info")->addOperation("getJointMappingForPort",
-    			&robotSim::getJointMappingForPort, this, RTT::ClientThread);
+    			&lwrSim::getJointMappingForPort, this, RTT::ClientThread);
 
     world_begin = gazebo::event::Events::ConnectWorldUpdateBegin(
-            boost::bind(&robotSim::WorldUpdateBegin, this));
+            boost::bind(&lwrSim::WorldUpdateBegin, this));
     world_end = gazebo::event::Events::ConnectWorldUpdateEnd(
-            boost::bind(&robotSim::WorldUpdateEnd, this));
+            boost::bind(&lwrSim::WorldUpdateEnd, this));
 }
 
-std::map<std::string, int> robotSim::getJointMappingForPort(
+std::map<std::string, int> lwrSim::getJointMappingForPort(
 		std::string portName) {
 	std::map<std::string, int> result;
 	// find port in kinematic chain. Ports should be unique so no problem here!
@@ -78,7 +78,7 @@ std::map<std::string, int> robotSim::getJointMappingForPort(
 	return result;
 }
 
-std::string robotSim::printKinematicChainInformation(const std::string& kinematic_chain)
+std::string lwrSim::printKinematicChainInformation(const std::string& kinematic_chain)
 {
     std::vector<std::string> chain_names = getKinematiChains();
     if(!(std::find(chain_names.begin(), chain_names.end(), kinematic_chain) != chain_names.end())){
@@ -88,7 +88,7 @@ std::string robotSim::printKinematicChainInformation(const std::string& kinemati
     return kinematic_chains[kinematic_chain]->printKinematicChainInformation();
 }
 
-std::string robotSim::getControlMode(const std::string& kinematic_chain)
+std::string lwrSim::getControlMode(const std::string& kinematic_chain)
 {
     std::vector<std::string> chain_names = getKinematiChains();
         if(!(std::find(chain_names.begin(), chain_names.end(), kinematic_chain) != chain_names.end())){
@@ -98,7 +98,7 @@ std::string robotSim::getControlMode(const std::string& kinematic_chain)
     return kinematic_chains[kinematic_chain]->getCurrentControlMode();
 }
 
-std::vector<std::string> robotSim::getControlAvailableMode(const std::string& kinematic_chain)
+std::vector<std::string> lwrSim::getControlAvailableMode(const std::string& kinematic_chain)
 {
     std::vector<std::string> control_modes;
 
@@ -111,7 +111,7 @@ std::vector<std::string> robotSim::getControlAvailableMode(const std::string& ki
     return control_modes;
 }
 
-std::vector<std::string> robotSim::getKinematiChains()
+std::vector<std::string> lwrSim::getKinematiChains()
 {
     std::vector<std::string> chains;
     for(std::map<std::string, boost::shared_ptr<KinematicChain>>::iterator it = kinematic_chains.begin();
@@ -120,7 +120,7 @@ std::vector<std::string> robotSim::getKinematiChains()
     return chains;
 }
 
-bool robotSim::setControlMode(const std::string& kinematic_chain, const std::string& controlMode)
+bool lwrSim::setControlMode(const std::string& kinematic_chain, const std::string& controlMode)
 {
     std::vector<std::string> chain_names = getKinematiChains();
     if(!(std::find(chain_names.begin(), chain_names.end(), kinematic_chain) != chain_names.end())){
@@ -130,7 +130,7 @@ bool robotSim::setControlMode(const std::string& kinematic_chain, const std::str
     return kinematic_chains[kinematic_chain]->setControlMode(controlMode);
 }
 
-bool robotSim::getModel(const std::string& model_name) {
+bool lwrSim::getModel(const std::string& model_name) {
     if (model) {
         log(Warning) << "Model [" << model_name << "] already loaded !"
                 << endlog();
@@ -150,16 +150,16 @@ bool robotSim::getModel(const std::string& model_name) {
     return bool(model);
 }
 
-void robotSim::updateHook() {
+void lwrSim::updateHook() {
 }
 
-bool robotSim::configureHook() {
+bool lwrSim::configureHook() {
     this->is_configured = gazeboConfigureHook(model);
     return is_configured;
 }
 
 //Here we already have the model!
-bool robotSim::gazeboConfigureHook(gazebo::physics::ModelPtr model) {
+bool lwrSim::gazeboConfigureHook(gazebo::physics::ModelPtr model) {
     if (model.get() == NULL) {
         RTT::log(RTT::Error) << "No model could be loaded" << RTT::endlog();
         return false;
@@ -196,6 +196,6 @@ bool robotSim::gazeboConfigureHook(gazebo::physics::ModelPtr model) {
 }
 
 ORO_CREATE_COMPONENT_LIBRARY()
-//ORO_CREATE_COMPONENT(cogimon::robotSim)
-ORO_LIST_COMPONENT_TYPE(cogimon::robotSim)
+//ORO_CREATE_COMPONENT(cogimon::lwrSim)
+ORO_LIST_COMPONENT_TYPE(cogimon::lwrSim)
 

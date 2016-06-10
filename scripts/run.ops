@@ -9,7 +9,7 @@ import("rtt_rsbcomm")
 
 //## import component libs
 import("rtt_gazebo_embedded") # gazebo
-import("rtt-gazebo-robot-sim") # generic robot sim (coman values)
+import("rtt-gazebo-lwr4plus-sim") # generic robot sim (lwr values)
 import("rtt-core-extensions") # kinematic chain views
 
 
@@ -24,7 +24,7 @@ gazebo.add_plugin("libRTTGazeboClockPlugin.so")
 
 
 //## robot sim
-loadComponent("lwr_gazebo","cogimon::robotSim")
+loadComponent("lwr_gazebo","cogimon::lwrSim")
 setActivity("lwr_gazebo",0,11,ORO_SCHED_OTHER)
 
 
